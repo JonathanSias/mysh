@@ -1,47 +1,118 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Caso o bash esteja instalado em um diretorio diferente
 #
-# Jonathan Sias
 #
+# autor: Jonathan Sias
+# descrição: Instalações de softwares
+# version: 2.0
+# licença: MIT License
 
-# java8
-sudo apt-get remove --purge openjdk-*
-echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee /etc/apt/sources.list.d/webupd8team-java.list
-echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee -a /etc/apt/sources.list.d/webupd8team-java.list
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EEA14886
-sudo apt-get update
-sudo apt-get install oracle-java8-installer
+function update_upgrade(){
+    sudo apt-get update && sudo apt-get dist-upgrade -y
+}
 
-# atom
-sudo add-apt-repository ppa:webupd8team/atom
-sudo apt-get update
-sudo apt-get install atom -y
+# snap is required to install devtools
+function package_managers(){
+    # Snap
+    sudo apt install snapd
+    # npm
+    sudo apt-get update
+    sudo apt install nodejs npm
+    sudo apt install npm
+    # Bower
+    # Brew
+}
 
-# vlc
-sudo add-apt-repository ppa:videolan/stable-daily
-sudo apt-get update
-sudo apt-get install vlc -y
+function install_devtools(){
+    # Atom
+    sudo snap install atom
+    sudo snap refresh atom
+    # Sublime
+    sudo snap install sublime-text
+    sudo snap refresh sublime-text
+    # Visual Code
+    sudo snap install vscode --classic
+    sudo snap refresh vscode
+    # Oni
+    # WebStorm
+    sudo snap install webstorm
+    sudo snap refresh webstorm
+    # IntelliJ
+    sudo snap install intellij-idea-ultimate --classic
+    #sudo snap install intellij-idea-community --classic
+    sudo snap refresh intellij-idea-ultimate
+    #sudo snap refresh intellij-idea-community
+    # GitKraken
+    sudo snap install gitkraken
+    sudo snap refresh gitkraken
+}
 
-# NetBeans
-wget http://download.netbeans.org/netbeans/8.1/final/bundles/netbeans-8.1-javase-linux.sh -O netbeans-linux.sh
-chmod +x netbeans-linux.sh
-./netbeans-linux.sh
+function install_browsers(){
+    # Chrome
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O chrome.deb
+    sudo dpkg -i chrome.deb
+    sudo apt-get install -f
+    # Chromium
+    sudo snap install chromium
+    sudo snap refresh chromium
+    # Firefox
+    sudo snap install firefox
+    sudo snap refresh firefox
+    #wget "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=pt-BR" -O firefox.tar.bz2
+    #sudo tar -jxvf  firefox.tar.bz2 -C /opt/
+    #sudo mv /opt/firefox*/ /opt/firefox
+    #sudo ln -sf /opt/firefox/firefox /usr/bin/firefox
+    #echo -e '[Desktop Entry]\n Version=59.0.3\n Encoding=UTF-8\n Name=Mozilla Firefox\n Comment=Navegador Web\n Exec=/opt/firefox/firefox\n Icon=/opt/firefox/browser/chrome/icons/default/default128.png\n Type=Application\n Categories=Network' | sudo tee /usr/share/applications/firefox.desktop
+    #sudo chmod +x /usr/share/applications/firefox.desktop
+    #cp /usr/share/applications/firefox.desktop  ~/Área\ de\ Trabalho/
+    # Tor
+    sudo snap install tor
+    sudo snap refresh tor
+}
 
-# Sublime Text
-wget http://c758482.r82.cf2.rackcdn.com/sublime-text_build-3047_amd64.deb
-sudo dpkg -i sublime-text_build-3047_amd64.deb
+function others(){
+    # Kdenlive
+    sudo add-apt-repository ppa:kdenlive/kdenlive-stable
+    sudo apt-get update
+    sudo apt-get install kdenlive
+}
 
-# Brackets
-sudo add-apt-repository ppa:webupd8team/brackets
-sudo apt-get update
-sudo apt-get install brackets -y
+function uninstall_others(){
+    # Kdenlive
+    sudo add-apt-repository ppa:kdenlive/kdenlive-stable -r -y
+    sudo apt-get remove kdenlive --auto-remove
+}
 
-# Chrome
-wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-sudo apt-get update ; sudo apt-get install google-chrome-stable -y
+function unistall_browsers(){
+    # Chrome
+    sudo apt-get remove google-chrome* --auto-remove
+    # Chromium
+    sudo snap remove chromium
+    # Firefox
+    sudo snap remove firefox
+    #sudo rm -Rf /opt/firefox*
+    #sudo rm -Rf /usr/bin/firefox
+    #sudo rm -Rf /usr/share/applications/firefox.desktop
+    # Tor
+    sudo snap remove tor
+}
 
-# Spotify
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys BBEBDCB318AD50EC6865090613B00F1FD2C19886
-echo deb http://repository.spotify.com stable non-free | sudo tee /etc/apt/sources.list.d/spotify.list
-sudo apt-get update
-sudo apt-get install spotify-client -y
+function unistall_devtools(){
+    # Atom
+    sudo snap remove atom
+    # Sublime
+    sudo snap remove sublime-text
+    # Visual Code
+    sudo snap remove vscode
+    # Oni
+    # WebStorm
+    sudo snap remove webstorm
+    # IntelliJ
+    sudo snap remove intellij-idea-ultimate
+    #sudo snap remove intellij-idea-community
+    # GitKraken
+    sudo snap remove gitkraken
+}
+
+package_managers
+update_upgrade
